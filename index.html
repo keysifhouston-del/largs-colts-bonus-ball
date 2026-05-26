@@ -35,16 +35,14 @@ input:focus,select:focus{border-color:#dc2626}
 .amber{background:#ca8a04;color:white}
 .row{display:flex;gap:8px}
 .row .btn{margin-bottom:0}
-.ng{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.nb{width:calc(16.666% - 5px);height:46px;border:2px solid #cbd5e1;border-radius:7px;background:#f8fafc;color:#475569;font-size:15px;font-weight:700;cursor:default;padding:0;touch-action:manipulation;line-height:42px;text-align:center}
-.nb.clickable{cursor:pointer}
+.ng{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.nb{width:calc(16.666% - 5px);height:46px;border:2px solid #cbd5e1;border-radius:7px;background:#f8fafc;color:#475569;font-size:15px;font-weight:700;padding:0;line-height:42px;text-align:center;cursor:default}
 .nb.s{background:#dc2626!important;border-color:#b91c1c!important;color:white!important}
 .nb.w{background:#ca8a04!important;border-color:#92400e!important;color:white!important}
 .admin-panel{display:none;background:#fff7ed;border:2px solid #fed7aa;border-radius:12px;padding:14px;margin-bottom:10px}
-.admin-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#92400e;margin-bottom:8px}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:10px}
+.admin-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
 .badge-admin{background:#111827;color:white}
-.badge-public{background:#e2e8f0;color:#475569}
 .pi{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9}
 .pi:last-child{border-bottom:none}
 .pn{width:34px;height:34px;border-radius:7px;background:#dc2626;color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -57,8 +55,9 @@ input:focus,select:focus{border-color:#dc2626}
 .em{font-size:13px;color:#94a3b8;text-align:center;padding:12px 0}
 .rl{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155;line-height:1.45}
 .rl:last-child{border-bottom:none}
-.err{color:#dc2626;font-size:13px;margin-top:4px;display:none}
-.ok{color:#16a34a;font-size:13px;margin-top:4px;display:none}
+.msg{font-size:13px;margin-top:4px;padding:8px 12px;border-radius:7px;display:none}
+.msg.err{background:#fee2e2;color:#b91c1c}
+.msg.ok{background:#dcfce7;color:#15803d}
 footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1px solid #e2e8f0;margin-top:4px}
 </style>
 </head>
@@ -88,24 +87,24 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
   <span class="syncmsg" id="syncmsg">Loading...</span>
   <span>
     <button class="syncbtn" onclick="loadData(true)">&#8635; Refresh</button>
-    <button class="adminbtn" onclick="toggleAdminLogin()" id="adminToggleBtn">Admin</button>
+    <button class="adminbtn" id="adminToggleBtn" onclick="toggleAdminLogin()">Admin</button>
   </span>
 </div>
 
 <!-- Admin login -->
 <div class="card" id="adminLoginCard" style="display:none;border-color:#fed7aa;background:#fff7ed">
-  <div class="ct" style="color:#92400e">Admin Login</div>
-  <input type="password" id="adminPwd" placeholder="Enter admin password">
+  <div class="ct" style="color:#92400e">Admin login</div>
+  <input type="password" id="adminPwd" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()">
   <div class="row">
     <button class="btn dark" onclick="adminLogin()">Login</button>
     <button class="btn gray" onclick="toggleAdminLogin()">Cancel</button>
   </div>
-  <div class="err" id="loginErr">Wrong password</div>
+  <div class="msg err" id="loginErr">Wrong password — try again</div>
 </div>
 
 <!-- Admin panel -->
 <div class="admin-panel" id="adminPanel">
-  <div class="admin-label">&#9881; Admin Controls <span class="badge badge-admin">ADMIN MODE</span></div>
+  <div class="admin-label">&#9881; Admin controls <span class="badge badge-admin">Admin mode</span></div>
 
   <div class="ct">Draw month</div>
   <div class="row" style="margin-bottom:8px">
@@ -124,26 +123,15 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
   <input type="number" id="bi" inputmode="numeric" min="1" max="59" placeholder="Enter bonus ball (1-59)">
   <div class="row" style="margin-bottom:8px">
     <button class="btn dark" onclick="setWin()">Set winner</button>
-    <button class="btn gray" onclick="clrWin()">Clear</button>
+    <button class="btn gray" onclick="clrWin()">Clear winner</button>
   </div>
   <button class="btn amber" onclick="fetchBall()">&#127381; Auto-fetch from National Lottery</button>
-  <div class="err" id="fetchErr"></div>
-  <div class="ok" id="fetchOk"></div>
+  <div class="msg err" id="fetchErr"></div>
+  <div class="msg ok" id="fetchOk"></div>
 
-  <div class="ct" style="margin-top:10px">Number grid controls</div>
-  <div class="row">
-    <button class="btn gray" onclick="clrAll()">Clear all sold</button>
-    <button class="btn grn" onclick="selAll()">Mark all sold</button>
+  <div style="margin-top:12px;padding-top:12px;border-top:1px solid #fed7aa">
+    <button class="btn gray" style="margin-bottom:0" onclick="adminLogout()">Log out of admin</button>
   </div>
-
-  <div style="margin-top:10px;text-align:right">
-    <button class="btn gray" style="width:auto;padding:8px 16px;font-size:13px" onclick="adminLogout()">Log out</button>
-  </div>
-</div>
-
-<!-- Public mode indicator -->
-<div id="publicBadge" style="text-align:right;margin-bottom:8px">
-  <span class="badge badge-public">PUBLIC VIEW</span>
 </div>
 
 <!-- Number grid -->
@@ -151,21 +139,22 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
   <div class="ct">Numbers</div>
   <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap">
     <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#f8fafc;border:2px solid #cbd5e1;border-radius:3px;display:inline-block"></span>Available</span>
-    <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#dc2626;border-radius:3px;display:inline-block"></span>Sold</span>
+    <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#dc2626;border-radius:3px;display:inline-block"></span>Taken</span>
     <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#ca8a04;border-radius:3px;display:inline-block"></span>Winner</span>
   </div>
   <div class="ng" id="ng"></div>
-  <div id="adminGridNote" style="display:none;font-size:12px;color:#64748b;margin-top:6px">Tap numbers to toggle sold/available (admin only)</div>
+  <p style="font-size:12px;color:#94a3b8">Numbers turn red when someone registers them below</p>
 </div>
 
-<!-- Register a number (public) -->
-<div class="card" id="registerCard">
+<!-- Register a number -->
+<div class="card">
   <div class="ct">Register your number</div>
+  <p style="font-size:13px;color:#64748b;margin-bottom:10px">Pick an available number and register your name. White numbers are still available.</p>
   <input type="text" id="pn" placeholder="Your name" autocomplete="off" autocorrect="off" spellcheck="false">
   <select id="pnum" style="margin-bottom:8px"></select>
-  <button class="btn red" onclick="registerPlayer()">+ Register my number</button>
-  <div class="err" id="regErr"></div>
-  <div class="ok" id="regOk"></div>
+  <button class="btn red" onclick="registerPlayer()">+ Register my number &mdash; &#163;5/month</button>
+  <div class="msg err" id="regErr"></div>
+  <div class="msg ok" id="regOk"></div>
 </div>
 
 <!-- Player list -->
@@ -177,9 +166,9 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
 <!-- Breakdown -->
 <div class="card">
   <div class="ct">This month's breakdown</div>
-  <div class="br2"><span>Sold (<span id="bsc">0</span> x &#163;5)</span><span class="ba" id="bpt">&#163;0</span></div>
-  <div class="br2"><span>Unsold to team (<span id="buc">59</span> x &#163;5)</span><span class="ba" style="color:#1d4ed8" id="bua">&#163;295</span></div>
-  <div class="br2"><span id="bwl">No winning ball set</span><span class="ba" id="bwv">-</span></div>
+  <div class="br2"><span>Registered (<span id="bsc">0</span> x &#163;5)</span><span class="ba" id="bpt">&#163;0</span></div>
+  <div class="br2"><span>Unregistered to team (<span id="buc">59</span> x &#163;5)</span><span class="ba" style="color:#1d4ed8" id="bua">&#163;295</span></div>
+  <div class="br2"><span id="bwl">No winning ball set yet</span><span class="ba" id="bwv">-</span></div>
   <div class="br2"><span>Winner payout</span><span class="ba" style="color:#15803d" id="bwp">&#163;0</span></div>
   <div class="br2"><span>Team total</span><span class="ba" style="color:#1d4ed8" id="btt">&#163;295</span></div>
 </div>
@@ -187,10 +176,10 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
 <!-- Rules -->
 <div class="card">
   <div class="ct">How it works</div>
-  <div class="rl"><span>&#127926;</span><span>Buy a number (1-59) for &#163;5/month &mdash; yours to keep each month</span></div>
+  <div class="rl"><span>&#127926;</span><span>Register a number (1-59) for &#163;5/month &mdash; yours to keep each month</span></div>
   <div class="rl"><span>&#128250;</span><span>Winning number = National Lottery bonus ball, first Saturday of the month</span></div>
-  <div class="rl"><span>&#128176;</span><span>Winner takes 50% of the sold pot &mdash; the team keeps the other 50%</span></div>
-  <div class="rl"><span>&#127942;</span><span>If the winning ball was not purchased, the full pot goes to the team</span></div>
+  <div class="rl"><span>&#128176;</span><span>Winner takes 50% of the pot &mdash; the team keeps the other 50%</span></div>
+  <div class="rl"><span>&#127942;</span><span>If the winning ball was not registered, the full pot goes to the team</span></div>
   <div class="rl"><span>&#9917;</span><span>Full sell-out = &#163;147.50 to the winner + &#163;147.50 to the team</span></div>
 </div>
 
@@ -198,24 +187,22 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
 <footer>Largs Colts F.C. &middot; 2017s &middot; Bonus Ball Lottery &middot; S.Y.F.A.</footer>
 
 <script>
-var S={}, PL={}, WB=null;
-var isAdmin=false;
-var adminPwd='';
+var PL={}, WB=null;
+var isAdmin=false, adminPwd='';
 var autoTimer=null;
 
-// Build number grid
+// Build grid
 var ng=document.getElementById('ng');
 for(var i=1;i<=59;i++){
   (function(n){
     var b=document.createElement('button');
     b.className='nb'; b.id='nb'+n; b.textContent=n;
-    b.onclick=function(){ if(isAdmin) tgl(n); };
     ng.appendChild(b);
   })(i);
 }
 
 function rSel(){
-  var s=document.getElementById('pnum'),p=s.value;
+  var s=document.getElementById('pnum'), p=s.value;
   s.innerHTML='';
   for(var i=1;i<=59;i++){
     if(!PL[i]){
@@ -228,63 +215,60 @@ function rSel(){
 }
 
 function setSyncMsg(m){ document.getElementById('syncmsg').textContent=m; }
+function showMsg(id,msg){ var el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
+function hideMsg(id){ document.getElementById(id).style.display='none'; }
 
-// ── ADMIN FUNCTIONS ──────────────────────────────────────────────────────────
+// ── ADMIN ────────────────────────────────────────────────────────────────────
 function toggleAdminLogin(){
   var card=document.getElementById('adminLoginCard');
   card.style.display = card.style.display==='none' ? 'block' : 'none';
-  document.getElementById('loginErr').style.display='none';
+  hideMsg('loginErr');
   document.getElementById('adminPwd').value='';
 }
 
 function adminLogin(){
   var pwd=document.getElementById('adminPwd').value;
+  // Validate by trying a save
+  var db={sold:buildSold(),players:PL,winBall:WB,
+    month:document.getElementById('mon').value,
+    year:document.getElementById('yr').value};
   fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({password:pwd,data:readLocalState()})})
+    body:JSON.stringify({password:pwd,data:db})})
   .then(function(r){
     if(r.ok){
       isAdmin=true; adminPwd=pwd;
       document.getElementById('adminLoginCard').style.display='none';
       document.getElementById('adminPanel').style.display='block';
-      document.getElementById('publicBadge').style.display='none';
-      document.getElementById('adminGridNote').style.display='block';
       document.getElementById('adminToggleBtn').textContent='Admin ON';
-      updateGridClickable();
-      loadData(false);
     } else {
-      document.getElementById('loginErr').style.display='block';
+      showMsg('loginErr','Wrong password \u2014 try again');
     }
-  }).catch(function(){ document.getElementById('loginErr').style.display='block'; });
+  }).catch(function(){ showMsg('loginErr','Connection error'); });
 }
 
 function adminLogout(){
   isAdmin=false; adminPwd='';
   document.getElementById('adminPanel').style.display='none';
-  document.getElementById('publicBadge').style.display='block';
-  document.getElementById('adminGridNote').style.display='none';
   document.getElementById('adminToggleBtn').textContent='Admin';
-  updateGridClickable();
 }
 
-function updateGridClickable(){
-  for(var i=1;i<=59;i++){
-    var b=document.getElementById('nb'+i);
-    if(!b) continue;
-    if(isAdmin) b.classList.add('clickable');
-    else b.classList.remove('clickable');
-  }
+function buildSold(){
+  // sold is derived entirely from player registrations
+  var sold={};
+  for(var k in PL) sold[k]=1;
+  return sold;
 }
-
-function tgl(n){ if(S[n]) delete S[n]; else S[n]=1; go(); adminSave(); }
 
 function setWin(){
   var v=parseInt(document.getElementById('bi').value,10);
   if(v>=1&&v<=59){
     fetch('/api/admin/setwin',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({password:adminPwd,winBall:v})})
-    .then(function(){ WB=v; go(); setSyncMsg('Winner set \u2713'); })
-    .catch(function(){ alert('Save failed'); });
-  } else alert('Enter 1-59');
+    .then(function(r){
+      if(r.ok){ WB=v; go(); setSyncMsg('Winner set \u2713'); }
+      else alert('Save failed');
+    });
+  } else alert('Enter a number between 1 and 59');
 }
 
 function clrWin(){
@@ -292,31 +276,25 @@ function clrWin(){
   adminSave(); go();
 }
 
-function clrAll(){ if(!confirm('Clear all sold numbers?')) return; S={}; adminSave(); go(); }
-function selAll(){ for(var i=1;i<=59;i++) S[i]=1; adminSave(); go(); }
-
 function fetchBall(){
-  var fe=document.getElementById('fetchErr'), fo=document.getElementById('fetchOk');
-  fe.style.display='none'; fo.style.display='none';
+  hideMsg('fetchErr'); hideMsg('fetchOk');
   setSyncMsg('Fetching lottery result...');
   fetch('/api/admin/fetchball',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({password:adminPwd})})
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.error){
-      fe.textContent=d.error; fe.style.display='block';
-      setSyncMsg('Fetch failed');
+      showMsg('fetchErr',d.error);
+      setSyncMsg('Fetch failed \u2014 enter manually above');
     } else {
       WB=d.ball;
       document.getElementById('bi').value=d.ball;
-      fo.textContent='Bonus ball '+d.ball+' fetched from National Lottery \u2713';
-      fo.style.display='block';
-      go(); setSyncMsg('Winner set from lottery \u2713');
+      showMsg('fetchOk','Bonus ball '+d.ball+' fetched from National Lottery \u2713');
+      go(); adminSave(); setSyncMsg('Winner set from lottery \u2713');
     }
   })
   .catch(function(){
-    fe.textContent='Could not reach lottery site. Please enter manually.';
-    fe.style.display='block';
+    showMsg('fetchErr','Could not reach lottery site \u2014 please enter manually above');
     setSyncMsg('Ready');
   });
 }
@@ -324,52 +302,51 @@ function fetchBall(){
 function adminSave(){
   if(!isAdmin) return;
   setSyncMsg('Saving...');
-  var data={sold:S,players:PL,winBall:WB,
+  var data={sold:buildSold(),players:PL,winBall:WB,
     month:document.getElementById('mon').value,
     year:document.getElementById('yr').value};
   fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({password:adminPwd,data:data})})
-  .then(function(){
-    var t=new Date(); var hm=t.getHours()+':'+(t.getMinutes()<10?'0':'')+t.getMinutes();
-    setSyncMsg('Saved '+hm+' \u2713');
-  })
-  .catch(function(){ setSyncMsg('Save failed'); });
+  .then(function(r){
+    if(r.ok){
+      var t=new Date(), hm=t.getHours()+':'+(t.getMinutes()<10?'0':'')+t.getMinutes();
+      setSyncMsg('Saved '+hm+' \u2713');
+    }
+  }).catch(function(){ setSyncMsg('Save failed'); });
 }
 
-// ── PUBLIC REGISTRATION ───────────────────────────────────────────────────────
+// ── PUBLIC REGISTER ───────────────────────────────────────────────────────────
 function registerPlayer(){
   var name=document.getElementById('pn').value.trim();
   var num=parseInt(document.getElementById('pnum').value,10);
-  var err=document.getElementById('regErr'), ok=document.getElementById('regOk');
-  err.style.display='none'; ok.style.display='none';
-  if(!name){ err.textContent='Please enter your name'; err.style.display='block'; return; }
+  hideMsg('regErr'); hideMsg('regOk');
+  if(!name){ showMsg('regErr','Please enter your name'); return; }
   fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({name:name,number:num})})
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.error){
-      err.textContent=d.error; err.style.display='block';
+      showMsg('regErr',d.error);
     } else {
-      ok.textContent='You are registered on number '+num+'!';
-      ok.style.display='block';
+      showMsg('regOk','You are registered on number '+num+'! \u2713 Please arrange payment of \u00a35 with the secretary.');
       document.getElementById('pn').value='';
       loadData(false);
     }
   })
-  .catch(function(){ err.textContent='Registration failed, try again'; err.style.display='block'; });
+  .catch(function(){ showMsg('regErr','Registration failed \u2014 please try again'); });
 }
 
-function readLocalState(){
-  return {sold:S,players:PL,winBall:WB,
-    month:document.getElementById('mon').value,
-    year:document.getElementById('yr').value};
+function delP(n){
+  if(!confirm('Remove '+PL[n]+' from number '+n+'?')) return;
+  delete PL[n];
+  adminSave(); rSel(); go();
 }
 
 // ── PLAYER LIST ───────────────────────────────────────────────────────────────
 function rPL(){
   var el=document.getElementById('pl');
   var ks=Object.keys(PL).map(Number).sort(function(a,b){return a-b;});
-  if(!ks.length){el.innerHTML='<div class="em">No players registered yet</div>';return;}
+  if(!ks.length){ el.innerHTML='<div class="em">No players registered yet</div>'; return; }
   var h='';
   ks.forEach(function(n){
     h+='<div class="pi"><div class="pn'+(WB===n?' iw':'')+'">'+n+'</div>';
@@ -380,19 +357,14 @@ function rPL(){
   el.innerHTML=h;
 }
 
-function delP(n){
-  if(!confirm('Remove '+PL[n]+'?')) return;
-  delete PL[n]; delete S[n];
-  adminSave(); rSel(); go();
-}
-
-// ── DRAW ──────────────────────────────────────────────────────────────────────
+// ── DRAW DISPLAY ──────────────────────────────────────────────────────────────
 function go(){
-  var sc=Object.keys(S).length, uc=59-sc;
+  var sc=Object.keys(PL).length, uc=59-sc;
   var sp=sc*5, up=uc*5;
-  var ws=(WB!==null)&&(S[WB]===1);
+  var ws=(WB!==null)&&(PL[WB]!==undefined);
   var wp=ws?Math.round(sp/2):0;
   var tt=(ws?Math.round(sp/2):sp)+up;
+
   document.getElementById('ss').textContent=sc+'/59';
   document.getElementById('sp').textContent='\u00a3'+sp;
   document.getElementById('sw').textContent='\u00a3'+wp;
@@ -403,40 +375,44 @@ function go(){
   document.getElementById('bua').textContent='\u00a3'+up;
   document.getElementById('bwp').textContent='\u00a3'+wp;
   document.getElementById('btt').textContent='\u00a3'+tt;
-  var wl=document.getElementById('bwl'),wv=document.getElementById('bwv');
-  if(WB===null){wl.textContent='No winning ball set';wv.textContent='-';}
-  else if(ws){wl.textContent='Ball '+WB+(PL[WB]?' ('+PL[WB]+')':'')+' \u2014 50/50';wv.textContent='50/50';}
-  else{wl.textContent='Ball '+WB+' not sold \u2014 pot to team';wv.textContent='Team wins all';}
+
+  var wl=document.getElementById('bwl'), wv=document.getElementById('bwv');
+  if(WB===null){ wl.textContent='No winning ball set yet'; wv.textContent='-'; }
+  else if(ws){ wl.textContent='Ball '+WB+' ('+PL[WB]+') \u2014 50/50 split'; wv.textContent='50/50'; }
+  else{ wl.textContent='Ball '+WB+' not registered \u2014 pot to team'; wv.textContent='Team wins all'; }
+
   var bn=document.getElementById('wb');
   if(ws&&wp>0){
     bn.style.display='block';
     document.getElementById('wn').textContent=WB;
-    document.getElementById('wnm').textContent=PL[WB]?PL[WB]+' \u2014 ':'';
+    document.getElementById('wnm').textContent=PL[WB]+' \u2014 ';
     document.getElementById('wp2').textContent=wp;
   } else bn.style.display='none';
+
+  // Grid: red = registered, gold = winner, white = available
   for(var i=1;i<=59;i++){
     var b=document.getElementById('nb'+i);
     if(!b) continue;
-    var cls='nb'+(isAdmin?' clickable':'');
-    if(WB!==null&&i===WB) cls+=' w';
-    else if(S[i]===1) cls+=' s';
-    b.className=cls;
+    if(WB!==null&&i===WB&&PL[i]) b.className='nb w';
+    else if(PL[i]) b.className='nb s';
+    else b.className='nb';
   }
+
   rSel(); rPL();
 }
 
-// ── LOAD DATA ─────────────────────────────────────────────────────────────────
+// ── LOAD ──────────────────────────────────────────────────────────────────────
 function loadData(manual){
   if(manual) setSyncMsg('Refreshing...');
   fetch('/api/data')
   .then(function(r){return r.json();})
   .then(function(d){
-    S=d.sold||{}; PL=d.players||{}; WB=d.winBall||null;
+    PL=d.players||{}; WB=d.winBall||null;
     if(d.month) document.getElementById('mon').value=d.month;
     if(d.year) document.getElementById('yr').value=d.year;
     if(WB) document.getElementById('bi').value=WB;
-    var t=new Date(); var hm=t.getHours()+':'+(t.getMinutes()<10?'0':'')+t.getMinutes();
-    setSyncMsg('Synced '+hm+' \u2014 '+Object.keys(PL).length+' players');
+    var t=new Date(), hm=t.getHours()+':'+(t.getMinutes()<10?'0':'')+t.getMinutes();
+    setSyncMsg('Synced '+hm+' \u2014 '+Object.keys(PL).length+' registered');
     go();
   })
   .catch(function(){
