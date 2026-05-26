@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Largs Colts Bonus Ball</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;background:#f1f5f9;color:#1e293b}
+.hdr{background:#111827;border-bottom:3px solid #dc2626;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.logo{width:54px;height:54px;border-radius:50%;background:white;padding:3px;flex-shrink:0;object-fit:contain}
+.hc{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#dc2626}
+.ht{font-size:20px;font-weight:800;color:white;line-height:1.1}
+.hs{font-size:11px;color:#94a3b8}
+.stats{display:flex;background:#1e293b}
+.st{flex:1;padding:10px 4px;text-align:center;border-right:1px solid rgba(255,255,255,.08)}
+.st:last-child{border-right:none}
+.sl{font-size:9px;font-weight:700;text-transform:uppercase;color:#64748b;display:block}
+.sv{font-size:18px;font-weight:800;display:block}
+.wrap{padding:10px;max-width:600px;margin:0 auto}
+.card{background:white;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #e2e8f0}
+.ct{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:8px}
+.wb{display:none;background:#dc2626;color:white;text-align:center;padding:12px;border-radius:10px;font-size:16px;font-weight:800;margin-bottom:10px}
+.syncbar{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:10px;padding:10px 14px;margin-bottom:10px;border:1px solid #e2e8f0}
+.syncmsg{font-size:12px;color:#64748b}
+.syncbtn{background:#111827;color:white;border:none;border-radius:7px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;-webkit-appearance:none}
+input,select{display:block;width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:8px;font-size:16px;color:#1e293b;background:white;margin-bottom:8px;outline:none;-webkit-appearance:none;appearance:none}
+input:focus,select:focus{border-color:#dc2626}
+.btn{display:block;width:100%;padding:13px;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:8px;-webkit-appearance:none;appearance:none}
+.red{background:#dc2626;color:white}
+.dark{background:#111827;color:white}
+.gray{background:#e2e8f0;color:#334155}
+.grn{background:#16a34a;color:white}
+.row{display:flex;gap:8px}
+.row .btn{margin-bottom:0}
+.ng{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.nb{width:calc(16.666% - 5px);height:46px;border:2px solid #cbd5e1;border-radius:7px;background:#f8fafc;color:#475569;font-size:15px;font-weight:700;cursor:pointer;padding:0;-webkit-appearance:none;appearance:none;touch-action:manipulation;line-height:42px;text-align:center}
+.nb.s{background:#dc2626!important;border-color:#b91c1c!important;color:white!important}
+.nb.w{background:#ca8a04!important;border-color:#92400e!important;color:white!important}
+.pi{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9}
+.pi:last-child{border-bottom:none}
+.pn{width:34px;height:34px;border-radius:7px;background:#dc2626;color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pn.iw{background:#ca8a04}
+.pm{flex:1;font-size:15px}
+.db{background:none;border:none;color:#94a3b8;font-size:24px;cursor:pointer;padding:2px 8px;line-height:1}
+.br2{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:14px;color:#475569;gap:8px}
+.br2:last-child{border-bottom:none;font-weight:700;color:#111;padding-top:9px}
+.ba{font-weight:700;flex-shrink:0}
+.em{font-size:13px;color:#94a3b8;text-align:center;padding:12px 0}
+.rl{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155;line-height:1.45}
+.rl:last-child{border-bottom:none}
+footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1px solid #e2e8f0;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <img class="logo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCABQAFADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1uiiue1nWLufUP7E0Ep/aBUPPcuNyWcZ6MR3c/wAK/ieKALWr+JLLSJUtmEt1fSjMdnbLvlf3x2HucCqAj8V6sNzzWuhwnokai5n/ABJwg/AGqsPleFNXt7C1spLqW9XfPeSEGWds4JZyR0JHHTnt31dW1LUrDTZb0wQRpGASgJkbBIGf4QMZz39s0AVv+EPMvN1r+uTseuLzyh+SAUf8IgYubXX9cgYdM3nmj8nBp1xc34NmbW7kuI7iVY5GVFj8nK7gxBQnG336lfeiK7vJNVeFbu4WyESOlzJGh3u2TtxsGOB/jigCMp4r0kbkltNdhHVHUW0/4EZQ/iBWho/iOy1iSSBPMtr2H/W2dyuyVPfHce4yKq6LrN1q1u80HlOEkaPy51MMhAwQ3fqGU9O9UfFIguorQ3WnXMN+JQltdQMN8LHgFWXJwTgYIxzzQB11FYGiazdfbH0bWwianEu9JEGEu4/76+h/vL2+lb9AGV4i1c6LpLzxR+bdSMsNtD/z1lY4Vf6n2Bo8PaMNF04RySefeTMZbq4PWaU/eP07AdgBWdMP7W8fQxHm30a284j/AKby5C5+iBj/AMCrpqAOR8UNqKazY3MVsht4XWGJnIO+RyDzzwvyqMnueO1N1RNVht45dW1Hyo5XEYjtU3cn3JUfoa6TV7IajpN1aHgyxsFP91sZUj3Bwfwrh7/VJ9b0iy1i08NX+oO0ADPHcCJWI6gKCWIDZ5wDQBr3Ph7TLe2+0XWqTuCdis8sahn5+XIXrkVX0XStM1eDdHdXMFwBuaETKzKuSASGXjODXIx+MdQGnrYiz0OytxnFjKjSS5znlWYc59eTU0Xi7xDoN1PHcWWhWcG8gtKPIaTHGdqsWP5GgDq44LyLVjaaZqpmnWLzB5yArtOP4gSPT+HtUkMuq3/iK1t723h3WBWWUo2RtYMAc+uRnBAPGa5ZfEfh/RdTsxqumz2oZEuEe1aQwAn5h8rBW9DgZHPTrXfeFwZtIGoSA+bqLm6Yn0b7g/BAo/CgBfEejNq1irWriHUbRvOs5/7kg7H/AGW6EehqbQdXXW9IgvAhikbKSxHrFIpwyn6EGtKuZ04f2V441GxXi31KFb+MdAJFOyT8T8hoAXwvibV/E12fvtqPk59o4kA/ma6Wub8L4g1fxNaH7y6j5+PaSJCP5GukoAhu7lLOznuZTiOGNpGPsBk/yrybwZ431WHSLS0ttOtJra3/AHZUO4cjcMsTgqPv5x35r0fxVGJvDl5CzbY5VWOQ5xhGYBufoTXGSxaHaeMdJtdMtbSHS4ziaWEDEzsjBMuOoU479Wz24AObi8Van4y8YratdhNP88iO3DmIMmcDc6/N6cZ5zgYzWLq/h2K08ZJEsRhs5tQMK28pPmKgYcnPVSDwcnjrzWhH8K/Esd/JJBBCYElIRjcKPMQNx69R61V1GDWr7XrTU3FveXNsIyyW9zG7kI2QNgbd0wOnbJ5NAHT33xS0jxB4Yv8AT7+0ms7maBkj2qJI92OMHgjnHavRvC063PhXSJU6NZxcenyAEVyupfDLwzrTCawR7Vy4DrbShQueTlSDg47cV03hOxGl6BFYK7SR2sssSO/VlWRgM0AbVc3rw8vxb4YuBxmW4gb3DRE/zQV0lc3rp83xb4YtxziW4uG9gsRX+bigBtwf7J8eW85+W31i3+zse3nx5ZMn3UsPwrZ1TU4NJsmuJ8tztSNeWkY9FUev8up4FQeIdHGt6TJbLJ5NwpEtvMOsUqnKt+f6E1ixXB8RWUN49qP7W0qQx3Vgx/i43KPqAGU9D06E0AUdOm1jXr+907VNy29xAwmTjy1jdWClMgHrgfg2exrF0/wZfXGkG2Ets97a/wCj3FuxKYAzsPTuv4HqOc13l41lqOnJqkF2LZrZWeO6C8xgfeVl7jjBQ85HYgGqN3NbyyxvrKSaXfRjZHfwPiMjrjfjAB67JB+fWgDkILHX9Ks5NLudMvb52d8SI7um0rhRngHB5yTzW5YeBFkVZ5tO0uzfduEXkeYV+fcASGx0+X6VV8S2/jiwtX1HRdfXULVRvMSW0YcL7YBDfz9qb4cufGeo6cmoa1rVtpdm43IZbaPzHX1wcBQff8qAMTxDo3imz1WGGzjKzXzJBFdQXZ6qOW28MDgfMxyAOK6GW41nQtQSztTNPHYxK7Bj8ssfTJP95zu5PO7PQDnVjuYLffcaaz3U8uI5NVvclACeAvA3c9FQBc9TWq8dnoemytOXuZbhsOSA0t1KeAoHrxgDoAOwFAF+yvYNQs4rq2ffFKMqf6EdiOhHY1g6Yf7V8a6nqC82+nxDT4j2MhO+U/h8i/garSyS+GtIFraIj63qsrGC3U5RHIGT/uIoBLdyM9639D0mLRNJgsYmMnljLyN1kcnLMfckk0AaFYOtaJcPdpq+jSJBqsS7WD/6u5T+4/8ARuoreooA46KS08QSXEcCnTtXwDd6bdZAkIwQxAIzggYkQ56Zz0rPnsLnTJ3mS8utNkeQvItw/mQzMwAY+dgg52jG8DHpXX6voOn63GgvYcyRnMU8bFJYj6q45FZYsfE+lfLZX9tq1uOkd+DHMB6eYgw34rQBkW2mvPbtKdN06dzKg8yARt8mw7j8jLu+fAyccHOOKjitpbd1NzaabphDxkXG2AMB/GDvZiMZ+Ujrt7Zq/JNIWLaj4CZ3PVoPs8wP4kg/pTobq5jYNpfgZon/AL0zW8AH4gk/pQBBBazal5cgM9/cmJI3lR2igBR2Kv5h+YnkZ2DqOwNWJri10C5jhVTquvuhEFpCMCJT1wOfLX1diSe5PSrJ0/xNqvF/qMGl256xacC8pHoZXHH4LWtpOh2GiQtHYwBGkO6SViWkkPqzHkmgCnoehzW1xLqmrSrc6vcLtd1HyQp1EcY7KO56k8mtyiigD//Z" alt="Largs Colts FC">
+  <div>
+    <div class="hc">S.Y.F.A. &middot; 2017s &middot; Fundraiser</div>
+    <div class="ht">Bonus Ball Lottery</div>
+    <div class="hs">Nat. Lottery &middot; First Saturday each month</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="st"><span class="sl">Sold</span><span class="sv" id="ss" style="color:white">0/59</span></div>
+  <div class="st"><span class="sl">Pot</span><span class="sv" id="sp" style="color:#fbbf24">&#163;0</span></div>
+  <div class="st"><span class="sl">Winner</span><span class="sv" id="sw" style="color:#4ade80">&#163;0</span></div>
+  <div class="st"><span class="sl">Team</span><span class="sv" id="st2" style="color:#60a5fa">&#163;0</span></div>
+</div>
+
+<div class="wrap">
+
+<div class="wb" id="wb">&#127942; Ball <span id="wn"></span> wins! <span id="wnm"></span>&#163;<span id="wp2"></span>!</div>
+
+<div class="syncbar">
+  <span class="syncmsg" id="syncmsg">Loading...</span>
+  <button class="syncbtn" onclick="loadData(true)">&#8635; Refresh</button>
+</div>
+
+<div class="card">
+  <div class="ct">Draw month</div>
+  <div class="row" style="margin-bottom:8px">
+    <select id="mon" style="flex:2;margin:0" onchange="save()">
+      <option>January</option><option>February</option><option>March</option>
+      <option>April</option><option>May</option><option>June</option>
+      <option>July</option><option>August</option><option>September</option>
+      <option>October</option><option>November</option><option>December</option>
+    </select>
+    <select id="yr" style="flex:1;margin:0" onchange="save()">
+      <option>2025</option><option>2026</option><option>2027</option>
+    </select>
+  </div>
+  <div class="ct">Winning bonus ball</div>
+  <input type="number" id="bi" inputmode="numeric" min="1" max="59" placeholder="Enter bonus ball (1-59)">
+  <div class="row">
+    <button class="btn dark" onclick="setWin()">Set winner</button>
+    <button class="btn gray" onclick="clrWin()">Clear</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">Numbers &mdash; tap to mark sold</div>
+  <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+    <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#f8fafc;border:2px solid #cbd5e1;border-radius:3px;display:inline-block"></span>Available</span>
+    <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#dc2626;border-radius:3px;display:inline-block"></span>Sold</span>
+    <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#ca8a04;border-radius:3px;display:inline-block"></span>Winner</span>
+  </div>
+  <div class="ng" id="ng"></div>
+  <div class="row">
+    <button class="btn gray" onclick="clrAll()">Clear all</button>
+    <button class="btn grn" onclick="selAll()">Mark all sold</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ct">Player register</div>
+  <input type="text" id="pn" placeholder="Player name" autocomplete="off" autocorrect="off" spellcheck="false">
+  <select id="pnum" style="margin-bottom:8px"></select>
+  <button class="btn red" onclick="addP()">+ Add player</button>
+  <div id="pl"><div class="em">No players registered yet</div></div>
+</div>
+
+<div class="card">
+  <div class="ct">This month's breakdown</div>
+  <div class="br2"><span>Sold (<span id="bsc">0</span> x &#163;5)</span><span class="ba" id="bpt">&#163;0</span></div>
+  <div class="br2"><span>Unsold to team (<span id="buc">59</span> x &#163;5)</span><span class="ba" style="color:#1d4ed8" id="bua">&#163;295</span></div>
+  <div class="br2"><span id="bwl">No winning ball set</span><span class="ba" id="bwv">-</span></div>
+  <div class="br2"><span>Winner payout</span><span class="ba" style="color:#15803d" id="bwp">&#163;0</span></div>
+  <div class="br2"><span>Team total</span><span class="ba" style="color:#1d4ed8" id="btt">&#163;295</span></div>
+</div>
+
+<div class="card">
+  <div class="ct">How it works</div>
+  <div class="rl"><span>&#127926;</span><span>Buy a number (1-59) for &#163;5/month &mdash; yours to keep each month</span></div>
+  <div class="rl"><span>&#128250;</span><span>Winning number = National Lottery bonus ball, first Saturday of the month</span></div>
+  <div class="rl"><span>&#128176;</span><span>Winner takes 50% of the sold pot &mdash; the team keeps the other 50%</span></div>
+  <div class="rl"><span>&#127942;</span><span>If the winning ball was not purchased, the full pot goes to the team</span></div>
+  <div class="rl"><span>&#9917;</span><span>Full sell-out = &#163;147.50 to the winner + &#163;147.50 to the team</span></div>
+</div>
+
+</div>
+<footer>Largs Colts F.C. &middot; 2017s &middot; Bonus Ball Lottery &middot; S.Y.F.A.</footer>
+
+<script>
+var S={}, PL={}, WB=null;
+var autoTimer=null;
+
+var ng=document.getElementById("ng");
+for(var i=1;i<=59;i++){
+  (function(n){
+    var b=document.createElement("button");
+    b.className="nb"; b.id="nb"+n; b.textContent=n;
+    b.onclick=function(){tgl(n);};
+    ng.appendChild(b);
+  })(i);
+}
+
+function rSel(){
+  var s=document.getElementById("pnum"),p=s.value;
+  s.innerHTML="";
+  for(var i=1;i<=59;i++){
+    if(!PL[i]){
+      var o=document.createElement("option");
+      o.value=i; o.textContent="Number "+i;
+      s.appendChild(o);
+    }
+  }
+  if(p) s.value=p;
+}
+
+function setSyncMsg(m){ document.getElementById("syncmsg").textContent=m; }
+
+function tgl(n){ if(S[n]) delete S[n]; else S[n]=1; go(); save(); }
+function setWin(){ var v=parseInt(document.getElementById("bi").value,10); if(v>=1&&v<=59){WB=v;go();save();}else alert("Enter 1-59"); }
+function clrWin(){ WB=null; document.getElementById("bi").value=""; go(); save(); }
+function clrAll(){ if(!confirm("Clear all sold numbers?")) return; S={}; go(); save(); }
+function selAll(){ for(var i=1;i<=59;i++) S[i]=1; go(); save(); }
+
+function addP(){
+  var name=document.getElementById("pn").value.trim();
+  var num=parseInt(document.getElementById("pnum").value,10);
+  if(!name){alert("Enter a player name");return;}
+  PL[num]=name; S[num]=1;
+  document.getElementById("pn").value="";
+  rSel(); go(); save();
+}
+
+function delP(n){
+  if(!confirm("Remove "+PL[n]+" (number "+n+")?")) return;
+  delete PL[n]; delete S[n];
+  rSel(); go(); save();
+}
+
+function rPL(){
+  var el=document.getElementById("pl");
+  var ks=Object.keys(PL).map(Number).sort(function(a,b){return a-b;});
+  if(!ks.length){el.innerHTML="<div class=\"em\">No players registered yet</div>";return;}
+  var h="";
+  ks.forEach(function(n){
+    h+="<div class=\"pi\"><div class=\"pn"+(WB===n?" iw":"")+"\">"+n+"</div>";
+    h+="<div class=\"pm\">"+PL[n]+"</div>";
+    h+="<button class=\"db\" onclick=\"delP("+n+")\">&times;</button></div>";
+  });
+  el.innerHTML=h;
+}
+
+function go(){
+  var sc=Object.keys(S).length, uc=59-sc;
+  var sp=sc*5, up=uc*5;
+  var ws=(WB!==null)&&(S[WB]===1);
+  var wp=ws?Math.round(sp/2):0;
+  var tt=(ws?Math.round(sp/2):sp)+up;
+  document.getElementById("ss").textContent=sc+"/59";
+  document.getElementById("sp").textContent="£"+sp;
+  document.getElementById("sw").textContent="£"+wp;
+  document.getElementById("st2").textContent="£"+tt;
+  document.getElementById("bsc").textContent=sc;
+  document.getElementById("bpt").textContent="£"+sp;
+  document.getElementById("buc").textContent=uc;
+  document.getElementById("bua").textContent="£"+up;
+  document.getElementById("bwp").textContent="£"+wp;
+  document.getElementById("btt").textContent="£"+tt;
+  var wl=document.getElementById("bwl"),wv=document.getElementById("bwv");
+  if(WB===null){wl.textContent="No winning ball set";wv.textContent="-";}
+  else if(ws){wl.textContent="Ball "+WB+(PL[WB]?" ("+PL[WB]+")":"")+" — 50/50";wv.textContent="50/50";}
+  else{wl.textContent="Ball "+WB+" not sold — pot to team";wv.textContent="Team wins all";}
+  var bn=document.getElementById("wb");
+  if(ws&&wp>0){
+    bn.style.display="block";
+    document.getElementById("wn").textContent=WB;
+    document.getElementById("wnm").textContent=PL[WB]?PL[WB]+" — ":"";
+    document.getElementById("wp2").textContent=wp;
+  } else bn.style.display="none";
+  for(var i=1;i<=59;i++){
+    var b=document.getElementById("nb"+i);
+    if(!b) continue;
+    b.className="nb"+(WB!==null&&i===WB?" w":S[i]===1?" s":"");
+  }
+  rSel(); rPL();
+}
+
+function save(){
+  setSyncMsg("Saving...");
+  var data={sold:S,players:PL,winBall:WB,month:document.getElementById("mon").value,year:document.getElementById("yr").value};
+  fetch("/api/data",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
+    .then(function(){
+      var t=new Date(); var hm=t.getHours()+":"+(t.getMinutes()<10?"0":"")+t.getMinutes();
+      setSyncMsg("Saved at "+hm+" ✓");
+    })
+    .catch(function(){ setSyncMsg("Save failed – check connection"); });
+}
+
+function loadData(manual){
+  if(manual) setSyncMsg("Refreshing...");
+  fetch("/api/data")
+    .then(function(r){return r.json();})
+    .then(function(d){
+      S=d.sold||{}; PL=d.players||{}; WB=d.winBall||null;
+      if(d.month) document.getElementById("mon").value=d.month;
+      if(d.year) document.getElementById("yr").value=d.year;
+      if(WB) document.getElementById("bi").value=WB;
+      var t=new Date(); var hm=t.getHours()+":"+(t.getMinutes()<10?"0":"")+t.getMinutes();
+      setSyncMsg("Synced "+hm+" — "+Object.keys(PL).length+" players registered");
+      go();
+    })
+    .catch(function(){
+      var mo=["January","February","March","April","May","June","July","August","September","October","November","December"];
+      document.getElementById("mon").value=mo[new Date().getMonth()];
+      setSyncMsg("Ready — add your players below");
+      go();
+    });
+  if(autoTimer) clearInterval(autoTimer);
+  autoTimer=setInterval(function(){loadData(false);},30000);
+}
+
+loadData(false);
+</script>
+</body>
+</html>
