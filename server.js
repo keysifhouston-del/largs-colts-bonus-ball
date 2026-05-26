@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const DB = path.join(__dirname, 'data.json');
 
@@ -28,6 +28,10 @@ app.get('/api/data', (req, res) => {
 app.post('/api/data', (req, res) => {
   writeDB(req.body);
   res.json({ ok: true });
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
