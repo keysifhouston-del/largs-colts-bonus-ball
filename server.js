@@ -1,109 +1,120 @@
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
-const https = require('https');
+const { MongoClient } = require('mongodb');
 const app = express();
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const DB = path.join(__dirname, 'data.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'colts2017';
+const MONGODB_URI = process.env.MONGODB_URI;
 
-function readDB() {
+let db, collection;
+
+async function connectDB() {
   try {
-    if (!fs.existsSync(DB)) return { sold: {}, players: {}, winBall: null, month: '', year: '2026' };
-    return JSON.parse(fs.readFileSync(DB, 'utf8'));
+    const client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    db = client.db('largscolts');
+    collection = db.collection('bonusball');
+    console.log('MongoDB connected');
   } catch(e) {
-    return { sold: {}, players: {}, winBall: null, month: '', year: '2026' };
+    console.error('MongoDB connection error:', e.message);
   }
 }
 
-function writeDB(data) {
-  fs.writeFileSync(DB, JSON.stringify(data), 'utf8');
+async function readDB() {
+  try {
+    const doc = await collection.findOne({ _id: 'state' });
+    if (!doc) return { players: {}, winBall: null, month: '', year: '2026' };
+    return { players: doc.players || {}, winBall: doc.winBall || null, month: doc.month || '', year: doc.year || '2026' };
+  } catch(e) {
+    console.error('readDB error:', e.message);
+    return { players: {}, winBall: null, month: '', year: '2026' };
+  }
 }
 
-function isFirstSaturday() {
-  const now = new Date();
-  return now.getDay() === 6 && now.getDate() <= 7;
+async function writeDB(data) {
+  try {
+    await collection.updateOne(
+      { _id: 'state' },
+      { $set: { players: data.players, winBall: data.winBall, month: data.month, year: data.year } },
+      { upsert: true }
+    );
+    return true;
+  } catch(e) {
+    console.error('writeDB error:', e.message);
+    return false;
+  }
 }
 
-function fetchLotteryBonusBall(callback) {
-  // National Lottery results API
-  const url = 'https://www.national-lottery.co.uk/results/lotto/draw-history/csv';
-  https.get('https://www.lotteryguru.co.uk/api/lotto/latest', (res) => {
-    let data = '';
-    res.on('data', chunk => data += chunk);
-    res.on('end', () => {
-      try {
-        const json = JSON.parse(data);
-        const bonus = json.bonusBall || json.bonus_ball || json.bonusball;
-        callback(null, parseInt(bonus, 10));
-      } catch(e) {
-        callback('Could not parse lottery data', null);
-      }
-    });
-  }).on('error', (e) => callback(e.message, null));
-}
-
-// Public: get data (everyone can read)
-app.get('/api/data', (req, res) => {
-  res.json(readDB());
+// Public: get data
+app.get('/api/data', async (req, res) => {
+  const data = await readDB();
+  res.json(data);
 });
 
-// Public: register a player (anyone can add themselves)
-app.post('/api/register', (req, res) => {
-  const { name, number } = req.body;
-  if (!name || !number || number < 1 || number > 59) {
-    return res.status(400).json({ error: 'Invalid name or number' });
-  }
-  const db = readDB();
-  if (db.players[number]) {
-    return res.status(400).json({ error: 'Number ' + number + ' is already taken by ' + db.players[number] });
-  }
-  db.players[number] = name;
-  db.sold[number] = 1;
-  writeDB(db);
-  res.json({ ok: true });
-});
-
-// Admin: full data update (password required)
-app.post('/api/admin', (req, res) => {
-  const { password, data } = req.body;
-  if (password !== ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Wrong password' });
-  }
-  writeDB(data);
-  res.json({ ok: true });
-});
-
-// Admin: set winning ball only
-app.post('/api/admin/setwin', (req, res) => {
-  const { password, winBall } = req.body;
-  if (password !== ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Wrong password' });
-  }
-  const db = readDB();
-  db.winBall = winBall;
-  writeDB(db);
-  res.json({ ok: true });
-});
-
-// Admin: fetch bonus ball from lottery API
-app.post('/api/admin/fetchball', (req, res) => {
-  const { password } = req.body;
-  if (password !== ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Wrong password' });
-  }
-  fetchLotteryBonusBall((err, ball) => {
-    if (err || !ball) {
-      return res.status(500).json({ error: 'Could not fetch lottery result. Please enter manually.' });
+// Public: register
+app.post('/api/register', async (req, res) => {
+  try {
+    const { name, number } = req.body;
+    const num = parseInt(number, 10);
+    if (!name || !num || num < 1 || num > 59) {
+      return res.status(400).json({ error: 'Invalid name or number' });
     }
-    const db = readDB();
-    db.winBall = ball;
-    writeDB(db);
-    res.json({ ok: true, ball: ball });
-  });
+    const data = await readDB();
+    if (data.players[num]) {
+      return res.status(400).json({ error: 'Number ' + num + ' is already taken by ' + data.players[num] });
+    }
+    data.players[num] = name;
+    const saved = await writeDB(data);
+    if (!saved) return res.status(500).json({ error: 'Could not save — please try again' });
+    res.json({ ok: true });
+  } catch(e) {
+    console.error('register error:', e.message);
+    res.status(500).json({ error: 'Server error: ' + e.message });
+  }
+});
+
+// Admin: save full state
+app.post('/api/admin', async (req, res) => {
+  const { password, data } = req.body;
+  if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Wrong password' });
+  await writeDB(data);
+  res.json({ ok: true });
+});
+
+// Admin: set winning ball
+app.post('/api/admin/setwin', async (req, res) => {
+  const { password, winBall } = req.body;
+  if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Wrong password' });
+  const data = await readDB();
+  data.winBall = winBall;
+  await writeDB(data);
+  res.json({ ok: true });
+});
+
+// Admin: fetch bonus ball from lottery
+app.post('/api/admin/fetchball', async (req, res) => {
+  const { password } = req.body;
+  if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Wrong password' });
+  res.status(500).json({ error: 'Auto-fetch unavailable — please enter the bonus ball manually.' });
+});
+
+// Admin: delete player
+app.post('/api/admin/delete', async (req, res) => {
+  const { password, number } = req.body;
+  if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Wrong password' });
+  const data = await readDB();
+  delete data.players[number];
+  await writeDB(data);
+  res.json({ ok: true });
+});
+
+// Health check
+app.get('/api/health', async (req, res) => {
+  const data = await readDB();
+  res.json({ status: 'ok', players: Object.keys(data.players).length });
 });
 
 app.get('*', (req, res) => {
@@ -111,4 +122,6 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Running on port ' + PORT));
+connectDB().then(() => {
+  app.listen(PORT, () => console.log('Running on port ' + PORT));
+});
