@@ -31,8 +31,6 @@ input:focus,select:focus{border-color:#dc2626}
 .red{background:#dc2626;color:white}
 .dark{background:#111827;color:white}
 .gray{background:#e2e8f0;color:#334155}
-.grn{background:#16a34a;color:white}
-.amber{background:#ca8a04;color:white}
 .row{display:flex;gap:8px}
 .row .btn{margin-bottom:0}
 .ng{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
@@ -53,11 +51,11 @@ input:focus,select:focus{border-color:#dc2626}
 .br2:last-child{border-bottom:none;font-weight:700;color:#111;padding-top:9px}
 .ba{font-weight:700;flex-shrink:0}
 .em{font-size:13px;color:#94a3b8;text-align:center;padding:12px 0}
-.rl{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155;line-height:1.45}
-.rl:last-child{border-bottom:none}
 .msg{font-size:13px;margin-top:4px;padding:8px 12px;border-radius:7px;display:none}
 .msg.err{background:#fee2e2;color:#b91c1c}
 .msg.ok{background:#dcfce7;color:#15803d}
+.rl{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155;line-height:1.45}
+.rl:last-child{border-bottom:none}
 footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1px solid #e2e8f0;margin-top:4px}
 </style>
 </head>
@@ -91,7 +89,6 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
   </span>
 </div>
 
-<!-- Admin login -->
 <div class="card" id="adminLoginCard" style="display:none;border-color:#fed7aa;background:#fff7ed">
   <div class="ct" style="color:#92400e">Admin login</div>
   <input type="password" id="adminPwd" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()">
@@ -99,13 +96,11 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
     <button class="btn dark" onclick="adminLogin()">Login</button>
     <button class="btn gray" onclick="toggleAdminLogin()">Cancel</button>
   </div>
-  <div class="msg err" id="loginErr">Wrong password — try again</div>
+  <div class="msg err" id="loginErr">Wrong password</div>
 </div>
 
-<!-- Admin panel -->
 <div class="admin-panel" id="adminPanel">
-  <div class="admin-label">&#9881; Admin controls <span class="badge badge-admin">Admin mode</span></div>
-
+  <div class="admin-label">Admin controls <span class="badge badge-admin">Admin mode</span></div>
   <div class="ct">Draw month</div>
   <div class="row" style="margin-bottom:8px">
     <select id="mon" style="flex:2;margin:0" onchange="adminSave()">
@@ -118,21 +113,17 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
       <option>2025</option><option>2026</option><option>2027</option>
     </select>
   </div>
-
   <div class="ct">Winning bonus ball</div>
   <input type="number" id="bi" inputmode="numeric" min="1" max="59" placeholder="Enter bonus ball (1-59)">
   <div class="row" style="margin-bottom:8px">
     <button class="btn dark" onclick="setWin()">Set winner</button>
     <button class="btn gray" onclick="clrWin()">Clear winner</button>
   </div>
-
-
-  <div style="margin-top:12px;padding-top:12px;border-top:1px solid #fed7aa">
-    <button class="btn gray" style="margin-bottom:0" onclick="adminLogout()">Log out of admin</button>
+  <div style="margin-top:10px;padding-top:10px;border-top:1px solid #fed7aa">
+    <button class="btn gray" style="margin:0" onclick="adminLogout()">Log out</button>
   </div>
 </div>
 
-<!-- Number grid -->
 <div class="card">
   <div class="ct">Numbers</div>
   <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap">
@@ -141,13 +132,12 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
     <span style="display:flex;align-items:center;gap:4px;font-size:12px;color:#64748b"><span style="width:12px;height:12px;background:#ca8a04;border-radius:3px;display:inline-block"></span>Winner</span>
   </div>
   <div class="ng" id="ng"></div>
-  <p style="font-size:12px;color:#94a3b8">Numbers turn red when someone registers them below</p>
+  <p style="font-size:12px;color:#94a3b8">Numbers turn red when someone registers</p>
 </div>
 
-<!-- Register a number -->
 <div class="card">
   <div class="ct">Register your number</div>
-  <p style="font-size:13px;color:#64748b;margin-bottom:10px">Pick an available number and register your name. White numbers are still available.</p>
+  <p style="font-size:13px;color:#64748b;margin-bottom:10px">Pick any available number for &#163;5/month. White numbers are still available.</p>
   <input type="text" id="pn" placeholder="Your name" autocomplete="off" autocorrect="off" spellcheck="false">
   <select id="pnum" style="margin-bottom:8px"></select>
   <button class="btn red" onclick="registerPlayer()">+ Register my number &mdash; &#163;5/month</button>
@@ -155,13 +145,11 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
   <div class="msg ok" id="regOk"></div>
 </div>
 
-<!-- Player list -->
 <div class="card">
   <div class="ct">Players registered</div>
   <div id="pl"><div class="em">No players registered yet</div></div>
 </div>
 
-<!-- Breakdown -->
 <div class="card">
   <div class="ct">This month's breakdown</div>
   <div class="br2"><span>Registered (<span id="bsc">0</span> x &#163;5)</span><span class="ba" id="bpt">&#163;0</span></div>
@@ -171,7 +159,6 @@ footer{text-align:center;padding:14px;font-size:11px;color:#94a3b8;border-top:1p
   <div class="br2"><span>Team total</span><span class="ba" style="color:#1d4ed8" id="btt">&#163;295</span></div>
 </div>
 
-<!-- Rules -->
 <div class="card">
   <div class="ct">How it works</div>
   <div class="rl"><span>&#127926;</span><span>Register a number (1-59) for &#163;5/month &mdash; yours to keep each month</span></div>
@@ -189,7 +176,6 @@ var PL={}, WB=null;
 var isAdmin=false, adminPwd='';
 var autoTimer=null;
 
-// Build grid
 var ng=document.getElementById('ng');
 for(var i=1;i<=59;i++){
   (function(n){
@@ -213,24 +199,20 @@ function rSel(){
 }
 
 function setSyncMsg(m){ document.getElementById('syncmsg').textContent=m; }
-function showMsg(id,msg){ var el=document.getElementById(id); el.textContent=msg; el.style.display='block'; }
+function showMsg(id,msg,type){ var el=document.getElementById(id); el.className='msg '+(type||'err'); el.textContent=msg; el.style.display='block'; }
 function hideMsg(id){ document.getElementById(id).style.display='none'; }
 
-//nction toggleAdminLogin(){
-  var card=document.getElementById('adminLoginCard');
-  card.style.display = card.style.display==='none' ? 'block' : 'none';
+function toggleAdminLogin(){
+  var c=document.getElementById('adminLoginCard');
+  c.style.display=c.style.display==='none'?'block':'none';
   hideMsg('loginErr');
   document.getElementById('adminPwd').value='';
 }
 
 function adminLogin(){
   var pwd=document.getElementById('adminPwd').value;
-  // Validate by trying a save
-  var db={sold:buildSold(),players:PL,winBall:WB,
-    month:document.getElementById('mon').value,
-    year:document.getElementById('yr').value};
   fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({password:pwd,data:db})})
+    body:JSON.stringify({password:pwd,data:{players:PL,winBall:WB,month:document.getElementById('mon').value,year:document.getElementById('yr').value}})})
   .then(function(r){
     if(r.ok){
       isAdmin=true; adminPwd=pwd;
@@ -238,7 +220,7 @@ function adminLogin(){
       document.getElementById('adminPanel').style.display='block';
       document.getElementById('adminToggleBtn').textContent='Admin ON';
     } else {
-      showMsg('loginErr','Wrong password \u2014 try again');
+      showMsg('loginErr','Wrong password');
     }
   }).catch(function(){ showMsg('loginErr','Connection error'); });
 }
@@ -247,13 +229,6 @@ function adminLogout(){
   isAdmin=false; adminPwd='';
   document.getElementById('adminPanel').style.display='none';
   document.getElementById('adminToggleBtn').textContent='Admin';
-}
-
-function buildSold(){
-  // sold is derived entirely from player registrations
-  var sold={};
-  for(var k in PL) sold[k]=1;
-  return sold;
 }
 
 function setWin(){
@@ -265,24 +240,22 @@ function setWin(){
       if(r.ok){ WB=v; go(); setSyncMsg('Winner set \u2713'); }
       else alert('Save failed');
     });
-  } else alert('Enter a number between 1 and 59');
+  } else {
+    alert('Enter a number between 1 and 59');
+  }
 }
 
 function clrWin(){
-  WB=null; document.getElementById('bi').value='';
+  WB=null;
+  document.getElementById('bi').value='';
   adminSave(); go();
 }
-
-
 
 function adminSave(){
   if(!isAdmin) return;
   setSyncMsg('Saving...');
-  var data={sold:buildSold(),players:PL,winBall:WB,
-    month:document.getElementById('mon').value,
-    year:document.getElementById('yr').value};
   fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({password:adminPwd,data:data})})
+    body:JSON.stringify({password:adminPwd,data:{players:PL,winBall:WB,month:document.getElementById('mon').value,year:document.getElementById('yr').value}})})
   .then(function(r){
     if(r.ok){
       var t=new Date(), hm=t.getHours()+':'+(t.getMinutes()<10?'0':'')+t.getMinutes();
@@ -291,7 +264,7 @@ function adminSave(){
   }).catch(function(){ setSyncMsg('Save failed'); });
 }
 
-//nction registerPlayer(){
+function registerPlayer(){
   var name=document.getElementById('pn').value.trim();
   var num=parseInt(document.getElementById('pnum').value,10);
   hideMsg('regErr'); hideMsg('regOk');
@@ -300,24 +273,24 @@ function adminSave(){
     body:JSON.stringify({name:name,number:num})})
   .then(function(r){return r.json();})
   .then(function(d){
-    if(d.error){
-      showMsg('regErr',d.error);
-    } else {
-      showMsg('regOk','You are registered on number '+num+'! \u2713 Please arrange payment of \u00a35 with the secretary.');
+    if(d.error){ showMsg('regErr',d.error); }
+    else {
+      showMsg('regOk','You are registered on number '+num+'! Please arrange payment of \u00a35 with the secretary \u2713','ok');
       document.getElementById('pn').value='';
       loadData(false);
     }
   })
-  .catch(function(){ showMsg('regErr','Registration failed \u2014 please try again'); });
+  .catch(function(){ showMsg('regErr','Registration failed - please try again'); });
 }
 
 function delP(n){
   if(!confirm('Remove '+PL[n]+' from number '+n+'?')) return;
-  delete PL[n];
-  adminSave(); rSel(); go();
+  fetch('/api/admin/delete',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({password:adminPwd,number:n})})
+  .then(function(){ loadData(false); });
 }
 
-//nction rPL(){
+function rPL(){
   var el=document.getElementById('pl');
   var ks=Object.keys(PL).map(Number).sort(function(a,b){return a-b;});
   if(!ks.length){ el.innerHTML='<div class="em">No players registered yet</div>'; return; }
@@ -331,13 +304,12 @@ function delP(n){
   el.innerHTML=h;
 }
 
-//nction go(){
+function go(){
   var sc=Object.keys(PL).length, uc=59-sc;
   var sp=sc*5, up=uc*5;
   var ws=(WB!==null)&&(PL[WB]!==undefined);
   var wp=ws?Math.round(sp/2):0;
   var tt=(ws?Math.round(sp/2):sp)+up;
-
   document.getElementById('ss').textContent=sc+'/59';
   document.getElementById('sp').textContent='\u00a3'+sp;
   document.getElementById('sw').textContent='\u00a3'+wp;
@@ -348,21 +320,19 @@ function delP(n){
   document.getElementById('bua').textContent='\u00a3'+up;
   document.getElementById('bwp').textContent='\u00a3'+wp;
   document.getElementById('btt').textContent='\u00a3'+tt;
-
   var wl=document.getElementById('bwl'), wv=document.getElementById('bwv');
   if(WB===null){ wl.textContent='No winning ball set yet'; wv.textContent='-'; }
   else if(ws){ wl.textContent='Ball '+WB+' ('+PL[WB]+') \u2014 50/50 split'; wv.textContent='50/50'; }
-  else{ wl.textContent='Ball '+WB+' not registered \u2014 pot to team'; wv.textContent='Team wins all'; }
-
+  else { wl.textContent='Ball '+WB+' not registered \u2014 pot to team'; wv.textContent='Team wins all'; }
   var bn=document.getElementById('wb');
   if(ws&&wp>0){
     bn.style.display='block';
     document.getElementById('wn').textContent=WB;
     document.getElementById('wnm').textContent=PL[WB]+' \u2014 ';
     document.getElementById('wp2').textContent=wp;
-  } else bn.style.display='none';
-
-  // Grid: red = registered, gold = winner, white = available
+  } else {
+    bn.style.display='none';
+  }
   for(var i=1;i<=59;i++){
     var b=document.getElementById('nb'+i);
     if(!b) continue;
@@ -370,11 +340,10 @@ function delP(n){
     else if(PL[i]) b.className='nb s';
     else b.className='nb';
   }
-
   rSel(); rPL();
 }
 
-//nction loadData(manual){
+function loadData(manual){
   if(manual) setSyncMsg('Refreshing...');
   fetch('/api/data')
   .then(function(r){return r.json();})
